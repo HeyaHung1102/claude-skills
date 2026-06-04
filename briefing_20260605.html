@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Isaac × 魚活通 商業基礎建設藍圖 — 2026/6/5</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+    font-size: 12pt;
+    line-height: 1.4;
+    color: #1a1a1a;
+    background: #fff;
+  }
+  @page {
+    size: A4 portrait;
+    margin: 12mm 14mm 12mm 14mm;
+  }
+  .page {
+    width: 182mm;
+    min-height: 263mm;
+    margin: 0 auto;
+    padding: 0;
+  }
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    border-bottom: 2.5pt solid #1a1a1a;
+    padding-bottom: 3pt;
+    margin-bottom: 7pt;
+  }
+  .header-title { font-size: 14pt; font-weight: 700; letter-spacing: 0.5pt; }
+  .header-sub { font-size: 9pt; color: #555; text-align: right; }
+
+  /* Grid layout */
+  .row { display: flex; gap: 8pt; margin-bottom: 7pt; }
+  .col-half { flex: 1; }
+  .col-third { flex: 1; }
+  .col-2third { flex: 2; }
+
+  /* Section */
+  .section-title {
+    font-size: 9pt;
+    font-weight: 700;
+    letter-spacing: 1pt;
+    text-transform: uppercase;
+    color: #fff;
+    background: #1a1a1a;
+    padding: 1.5pt 5pt;
+    margin-bottom: 4pt;
+  }
+  .section-title.accent { background: #2d6a4f; }
+  .section-title.accent2 { background: #1d3557; }
+  .section-title.accent3 { background: #6b2737; }
+
+  /* JoHari */
+  .johari-grid {
+    display: grid;
+    grid-template-columns: 60pt 1fr 1fr;
+    grid-template-rows: 18pt 1fr 1fr;
+    gap: 1.5pt;
+    font-size: 8.5pt;
+  }
+  .j-corner { background: #fff; }
+  .j-header {
+    background: #e8e8e8;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2pt;
+    font-size: 8pt;
+    text-align: center;
+  }
+  .j-cell {
+    padding: 4pt 5pt;
+    font-size: 8pt;
+    line-height: 1.35;
+  }
+  .j-open { background: #d4edda; }
+  .j-blind { background: #fff3cd; }
+  .j-hidden { background: #cce5ff; }
+  .j-unknown { background: #e2e3e5; }
+  .j-label {
+    background: #f8f8f8;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8pt;
+    padding: 3pt;
+    writing-mode: horizontal-tb;
+    text-align: center;
+  }
+  .dot { display: inline-block; width: 7pt; height: 7pt; border-radius: 50%; margin-right: 2pt; vertical-align: middle; }
+  .dot-g { background: #28a745; }
+  .dot-y { background: #ffc107; }
+  .dot-b { background: #007bff; }
+  .dot-k { background: #6c757d; }
+
+  /* Flow */
+  .flow {
+    font-size: 8.5pt;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 2pt;
+    background: #f0f4ff;
+    padding: 5pt 7pt;
+    border-left: 3pt solid #1d3557;
+  }
+  .flow-node {
+    background: #1d3557;
+    color: #fff;
+    padding: 2pt 6pt;
+    border-radius: 2pt;
+    white-space: nowrap;
+  }
+  .flow-arr { color: #1d3557; font-weight: 700; font-size: 10pt; }
+  .flow-split { color: #888; font-size: 8pt; }
+
+  /* Task table */
+  table { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+  th {
+    background: #1d3557;
+    color: #fff;
+    padding: 2.5pt 5pt;
+    text-align: left;
+    font-weight: 600;
+    font-size: 8pt;
+  }
+  td { padding: 2.5pt 5pt; border-bottom: 0.5pt solid #e0e0e0; vertical-align: top; }
+  tr:nth-child(even) td { background: #f7f7f7; }
+  .tag {
+    display: inline-block;
+    background: #2d6a4f;
+    color: #fff;
+    font-size: 7pt;
+    padding: 1pt 4pt;
+    border-radius: 2pt;
+    white-space: nowrap;
+  }
+  .tag-r { background: #6b2737; }
+  .tag-b { background: #1d3557; }
+
+  /* Math box */
+  .math-box {
+    background: #fff8e1;
+    border: 1pt solid #f0c040;
+    border-left: 3pt solid #f0c040;
+    padding: 5pt 8pt;
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+  .math-box b { font-size: 9pt; }
+  .formula {
+    font-family: "Courier New", monospace;
+    font-size: 8pt;
+    background: #fffde7;
+    padding: 2pt 5pt;
+    display: inline-block;
+    margin: 2pt 0;
+    border-radius: 2pt;
+  }
+
+  /* Adjacent domains */
+  .domain-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3pt;
+    font-size: 8pt;
+  }
+  .domain-item {
+    background: #f0f4ff;
+    border-left: 2.5pt solid #1d3557;
+    padding: 3pt 6pt;
+  }
+  .domain-item b { color: #1d3557; }
+
+  /* Footer */
+  .footer {
+    border-top: 1pt solid #ccc;
+    padding-top: 3pt;
+    font-size: 7.5pt;
+    color: #888;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 5pt;
+  }
+  .badge {
+    display: inline-block;
+    background: #eee;
+    border-radius: 2pt;
+    padding: 1pt 4pt;
+    font-size: 7.5pt;
+    color: #444;
+    margin-right: 3pt;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <div class="header-title">Isaac × 魚活通｜商業基礎建設藍圖</div>
+      <div style="font-size:9pt; color:#555; margin-top:2pt;">
+        <span class="badge">Day 14016</span>
+        <span class="badge">2026/6/5 顧問會面</span>
+        <span class="badge">@fishactinf</span>
+      </div>
+    </div>
+    <div class="header-sub">
+      github.com/HeyaHung1102/claude-skills<br>
+      Route A：Google Drive → n8n → Super DB
+    </div>
+  </div>
+
+  <!-- Row 1: JoHari + Flow -->
+  <div class="row">
+
+    <!-- JoHari -->
+    <div class="col-2third">
+      <div class="section-title">JoHari Window — 本次知識地圖</div>
+      <div class="johari-grid">
+        <div class="j-corner"></div>
+        <div class="j-header">Isaac 知道</div>
+        <div class="j-header">Isaac 不知道</div>
+
+        <div class="j-label">顧問<br>知道</div>
+        <div class="j-cell j-open">
+          <span class="dot dot-g"></span><b>開放區</b><br>
+          服務入口已串聯；GitHub repos 運行中；Phase 4 修復完成；商業模式方向明確
+        </div>
+        <div class="j-cell j-blind">
+          <span class="dot dot-y"></span><b>盲點區</b><br>
+          定價策略是否符合市場？入口轉換率的真實瓶頸？顧問視角的客戶痛點
+        </div>
+
+        <div class="j-label">顧問<br>不知道</div>
+        <div class="j-cell j-hidden">
+          <span class="dot dot-b"></span><b>隱藏區（護城河）</b><br>
+          上帝不等式期望值模型；Evernote 14,016 天知識庫；n8n 自動化藍圖；華羅庚定價法
+        </div>
+        <div class="j-cell j-unknown">
+          <span class="dot dot-k"></span><b>未知區</b><br>
+          en_backup.db 資料品質；Drive 記錄完整性；實際轉換率數據
+        </div>
+      </div>
+      <div style="font-size:7.5pt; color:#888; margin-top:3pt;">
+        ★ 策略：今日將<span style="color:#007bff; font-weight:700;">隱藏區</span>轉為<span style="color:#28a745; font-weight:700;">開放區</span>，以數學模型換取顧問實質回饋
+      </div>
+    </div>
+
+    <!-- Math Box -->
+    <div class="col-half">
+      <div class="section-title accent3">數學模型</div>
+      <div class="math-box">
+        <b>上帝不等式（Samuel-Cahn）</b><br>
+        <span class="formula">E[最優決策] ≥ ½ × E[完美資訊]</span><br>
+        → 觀察前 <b>37%</b> 機會，之後取第一個最優者<br><br>
+        <b>Isaac 的業務應用</b><br>
+        · 電子報達 <b>37% 訂閱目標</b> → 啟動付費轉換<br>
+        · 觀察 <b>37% 發文周期</b> → 決定主力內容<br><br>
+        <b>華羅庚 0.618 定價法</b><br>
+        <span class="formula">測試價 = 下限 + 0.618 × (上限−下限)</span><br>
+        → 快速收斂最佳客單價
+      </div>
+      <div style="margin-top:5pt;">
+        <div class="section-title accent3">商業公式</div>
+        <div style="background:#fff0f0; padding:5pt 7pt; font-size:8.5pt; border-left:3pt solid #6b2737; line-height:1.6;">
+          <span class="formula">期望值 = Σ(流量 × 轉換率 × 客單價)</span><br>
+          優先自動化：邊際貢獻最大的入口
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 2: Flow -->
+  <div style="margin-bottom:7pt;">
+    <div class="section-title accent2">Route A — 自動化商業閉環</div>
+    <div class="flow">
+      <span class="flow-node">Google Drive</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-node">n8n (Zeabur)</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-node">Super Database</span>
+      <span class="flow-arr">→</span>
+      <span class="flow-node">Claude Code / Dify.ai</span>
+      <span class="flow-arr">→</span>
+      <span style="font-size:8pt; color:#1d3557; font-weight:600;">每日文章 ／ 電子報 ／ LINE ／ 預約表單 ／ ZOOM ／ 金流</span>
+    </div>
+    <div style="font-size:7.5pt; color:#888; margin-top:2pt; padding-left:2pt;">
+      Route B（現行）：GitHub Actions ｜ en_backup.db → SQL 回溯 → 品牌行事曆 → n8n 讀取
+    </div>
+  </div>
+
+  <!-- Row 3: Tasks + Domains -->
+  <div class="row">
+
+    <!-- Tasks -->
+    <div class="col-2third">
+      <div class="section-title accent">任務優先序（6/5 前）</div>
+      <table>
+        <tr>
+          <th>優先</th><th>任務</th><th>行動</th><th>展示價值</th>
+        </tr>
+        <tr>
+          <td><span class="tag-r tag">T1 今日</span></td>
+          <td>en_backup.db 結構摸底</td>
+          <td><code style="font-size:7.5pt;">sqlite3 .schema → SELECT COUNT(*)</code></td>
+          <td>確認知識庫可用性</td>
+        </tr>
+        <tr>
+          <td><span class="tag-r tag">T2 今日</span></td>
+          <td>Google Drive 活動記錄提取</td>
+          <td>Drive API activity.list() 篩選新增/修改</td>
+          <td>時間軸視覺化</td>
+        </tr>
+        <tr>
+          <td><span class="tag tag-b">T3 明日</span></td>
+          <td>品牌行事曆建立</td>
+          <td>Drive 時間軸 + LOG.md → CSV → n8n</td>
+          <td>⭐ 顧問展示主軸</td>
+        </tr>
+        <tr>
+          <td><span class="tag">T4 後天</span></td>
+          <td>n8n 最小閉環跑通</td>
+          <td>Drive trigger → DB → 一條服務入口</td>
+          <td>自動化 demo</td>
+        </tr>
+      </table>
+      <div style="font-size:7.5pt; color:#555; margin-top:3pt;">
+        挑戰應對：資料品質未知 → 先摸底再決策 ｜ n8n 剛上手 → Make.com 快速驗證後移植
+      </div>
+    </div>
+
+    <!-- Adjacent Domains -->
+    <div class="col-half">
+      <div class="section-title">鄰近知識領域</div>
+      <div class="domain-list">
+        <div class="domain-item"><b>最優停止理論</b><br>上帝不等式母理論<br>Secretary Problem</div>
+        <div class="domain-item"><b>事件溯源</b><br>Drive 記錄 →<br>品牌行事曆重建</div>
+        <div class="domain-item"><b>資訊架構 IA</b><br>knowledge_base →<br>Super DB schema</div>
+        <div class="domain-item"><b>個人 CRM</b><br>表單 + ZOOM →<br>客戶生命周期</div>
+        <div class="domain-item"><b>行銷自動化</b><br>n8n flow →<br>電子報 / LINE</div>
+        <div class="domain-item"><b>貝氏更新</b><br>每次互動更新<br>轉換率信念</div>
+      </div>
+      <div style="margin-top:5pt; background:#f0fff4; border-left:3pt solid #2d6a4f; padding:4pt 6pt; font-size:8pt;">
+        <b>Isaac 核心護城河</b><br>
+        地政 × 法律 × 數學模型 × AI 自動化<br>
+        → 四維交叉的知識結構，市場稀缺
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Isaac｜claude-skills × my_knowledge_base ｜ Day 14016, 2026/6/3</span>
+    <span>顧問：魚活通 @fishactinf ｜ 6/5 晚上 ｜ Route A 就緒後 [PENDING_DATA] 自動解除</span>
+  </div>
+
+</div>
+</body>
+</html>
