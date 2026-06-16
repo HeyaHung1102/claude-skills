@@ -2,6 +2,28 @@
 
 ---
 
+## IRR 專案 — repo 確認與待辦（2026/6/16）
+
+### 已確認
+- repo `HeyaHung1102/portfolio-tracker` **確實存在**（Private, Python, 建立於 2026/6/6）
+- 預計開發分支：`claude/optimistic-fermi-6fs51v`（**尚未驗證該分支是否存在**，
+  因為這個 session 的 GitHub MCP 範圍只開放 `claude-skills`，無權限列出 portfolio-tracker 的分支）
+
+### 待辦（下次接續 IRR 工作時）
+1. 把 `portfolio-tracker` 加進 session 的 repo 允許清單，
+   或在新 session 直接指定要操作這個 repo
+2. 確認 `claude/optimistic-fermi-6fs51v` 分支是否已存在，沒有就建立
+3. 把上一輪整理好的 IRR repo 專用 CLAUDE.md 提示詞放進該 repo
+   （內容：左手右手飛輪定位、XIRR 計算核心需求、74.5% 先知不等式基準、
+   與 claude-skills/prophet-trading 的模型共用關係）
+4. 第一個任務：XIRR 計算核心（Newton-Raphson 或 scipy.optimize），
+   附「分批買入 + 中途賣出 + 全部出清」單元測試案例
+
+### 中斷原因
+Isaac 日間本職有緊急工作插入，此處中斷，留下待辦供下次接續。
+
+---
+
 ## 2026/6/16 紀錄
 
 ### 自動化平台選擇：n8n vs Make.com
