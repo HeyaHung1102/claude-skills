@@ -1,0 +1,97 @@
+# award-writeup skill — 結構化資料（給 Make.com / n8n 自動化用）
+# 用 YAML 而非 JSON 是因為 Isaac 實測 JSON 在 Shortcuts/n8n 多步驟傳遞中偶爾會掉資料，
+# YAML 在 GitHub 上人工編輯與自動化解析都更穩定。
+
+meta:
+  unit: 路產組
+  contact: 洪赫亞
+  task_source: 115年6月16日綜合組企劃科辜琬淇來信
+  reply_deadline: "115-06-24"
+
+bureau_meeting_reply:
+  meeting_no: 6
+  meeting_month: "115-07"
+  has_award_request: false
+  reason: >
+    本組辦理之「115年度所屬單位國有公用財產管理情形檢核」獎項，
+    依檢核計畫時程（現地檢核至4月、評分5/31前核定），尚未完成核定流程，
+    無法於第6次會報辦理頒獎。
+  deferred_to:
+    primary_meeting_no: 7
+    fallback_meeting_no: 8
+    fallback_month: "115-08"
+    fallback_condition: 若因系統填報或簽核流程延遲致第7次仍無法辦理
+  topic_report_rotation:
+    applicable: false
+    note: 規劃組專題報告輪值與路產組無關
+  promotion_coordination_report:
+    applicable: false
+
+award:
+  award_name: 115年度所屬單位國有公用財產管理情形檢核績優單位獎
+  host_unit: 路產組
+  target_meeting_no: 7
+  background:
+    origin: >
+      為激勵本局所屬各分局，對於轄管國有公用財產管理業務同仁之服務熱忱，
+      並體恤該工作業務繁雜辛勞，以提昇該工作品質，積極排除違章建築、土地占用處理、
+      房屋盤點有物無帳處理、清理國道周邊閒置土地達成管用合一與被占用排除績效，
+      期以激勵第一線基層同仁士氣
+    basis:
+      - 交通部及所屬機關（構）員工激勵與表揚要點
+    review_committee:
+      composition: 路產組主管及同仁
+      basis_document: 115年度所屬單位國有公用財產管理情形檢核結果
+    participant_scope:
+      unit_count: 16
+      detail: 各養護工程分局14個工務段及新建工程分局用地科
+    review_period:
+      start: "114-01-01"
+      end: "114-12-31"
+    scoring_criteria:
+      - item: 事務性財產及宿舍管理
+        weight_pct: 20
+      - item: 路上設施財產管理
+        weight_pct: 20
+      - item: 交控財產管理，與機房出租情形
+        weight_pct: 20
+      - item: 公用房地管理情形，與被占用土地及提供使用處理
+        weight_pct: 20
+      - item: 財產管理之內部控制等辦理情形
+        weight_pct: 20
+    review_plan_schedule_check:
+      site_check_deadline: "115-04"
+      score_finalize_deadline: "115-05-31"
+      note: 用來判斷「資料齊全」是否真的趕得上目標會報梯次
+
+  winners:
+    - rank: 第一名（養護工程分局組）
+      unit: 第二新建工程分局
+      person: 卓明君分局長
+      reason: >
+        任職分局長期間督導所屬辦理115年度國有公用財產管理情形，
+        經本局評定結果，獲得「養護工程分局」組綜合平均成績第一名，備極辛勞
+      prize: 獎盃1座
+    - rank: 第一名（新建工程分局組）
+      unit: 中區養護工程分局
+      person: 張勝緯分局長
+      reason: >
+        任職分局長期間督導所屬辦理115年度國有公用財產管理情形，
+        經本局評定結果，獲得「新建工程分局」組綜合平均成績第一名，備極辛勞
+      prize: 獎盃1座
+
+  director_speech:
+    word_count: 215
+    text: >
+      各位同仁，大家好。本局肩負管理近三萬筆土地與九百餘棟建物的重責，
+      路權土地管理及產籍維護工作繁雜而細緻，我要特別肯定所有單位的付出，
+      讓我們在115年度所屬單位國有公用財產管理情形檢核中，榮獲分組第一名的佳績。
+      今天，我們表揚本局表現最為優異的兩位分組第一名：中分局及二分局，
+      你們在辦理業務上展現了專業與韌性，一再精進積極作為脫穎而出，是全局的楷模。
+      現在，我除了頒發獎項，也致上最誠摯的感謝。請大家持續以專業守護國家資產，
+      共創佳績。謝謝大家。
+
+unrelated_tasks_noted_but_excluded:
+  - name: 泰管園區建築物115年火災保險及地震險招標
+    tender_no: 114A060P001
+    reason: 與本次局務會報頒獎任務無關，獨立招標案，不納入 award-writeup 語料庫
