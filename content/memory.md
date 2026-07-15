@@ -2,6 +2,32 @@
 
 ---
 
+## 反向幻覺案例：Gemini 誤判 Claude Cowork 為第三方軟體（2026/7/15 查核）
+
+### 事件
+Gemini 用看似嚴謹的 Prover-Verifier 報告宣稱：Claude Cowork、/schedule 排程、
+7 個 Data Skills（explore-data 等）、Dispatch 手機遙控桌機「都不是 Anthropic 官方功能，
+是第三方軟體被誤稱」，還附上熵計算（ΔH≈6.5 bits）與三筆參考文獻。
+
+### 查核結果（經 web 官方來源驗證）
+- ❌ 全部推翻：Cowork 是官方桌面產品（support.claude.com 有官方文件）、
+  Scheduled Tasks / Data Plugin（anthropics/knowledge-work-plugins 開源）/ Dispatch（Pro/Max beta）皆為官方功能
+- ✅ 唯一正確：LLM 抓的股價有延遲，不可作即時交易依據
+- ⚠️ GCB 政府組態電腦確實可能用不了 → 但原因是「組態政策封鎖安裝/外連」，
+  不是「功能不存在」；硬體品牌（Vivobook/MacBook Pro）完全無關；真正門檻是付費方案層級
+
+### 關鍵教訓（防幻覺原則升級）
+1. **反向幻覺**：模型訓練截止日期後的新產品，會被推理成「不存在→一定是第三方」——
+   把真的當成假的，比編造假的更難察覺
+2. **格式嚴謹 ≠ 內容正確**：熵計算公式、APA 文獻、Prover-Verifier 框架都可以被
+   拿來包裝錯誤結論；Gemini 引用的 O'Reilly 書目查無此書（捏造文獻）
+3. **查證產品功能類主張的鐵則**：必查當下的官方文件（support.claude.com / 官方 GitHub），
+   不信任何模型的內部記憶
+4. **一手證據優先**：本 session 自身就載有 Skill/排程工具，是最強反證——
+   「我正在用的東西」比「任何模型說它存在與否」更可信
+
+---
+
 ## 空間整理 → 數位整理同構（2026/6/16，搬家後整理）
 
 ### 起點
