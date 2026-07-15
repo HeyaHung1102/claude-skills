@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Premortem：Dispatch / Data Plugin 失敗死因排行</title>
+<style>
+  :root {
+    --surface: #fcfcfb; --ink: #1a1a1a; --ink-2: #555; --ink-3: #888;
+    --grid: #e8e8e5; --c1: #2563EB; --c2: #D97706; --c3: #0D9488;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --surface: #1c1c1a; --ink: #ececea; --ink-2: #b5b5b0; --ink-3: #8a8a85;
+            --grid: #34342f; --c1: #60A5FA; --c2: #FBBF24; --c3: #2DD4BF; }
+  }
+  body { font-family: "PingFang TC","Microsoft JhengHei",sans-serif; background: var(--surface);
+         color: var(--ink); margin: 0; padding: 24px; }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  h1 { font-size: 18px; margin: 0 0 4px; }
+  .sub { color: var(--ink-2); font-size: 13px; margin: 0 0 16px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; color: var(--ink-2); margin-bottom: 14px; flex-wrap: wrap; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+  .row { display: grid; grid-template-columns: 230px 1fr 44px; align-items: center;
+         gap: 10px; margin-bottom: 10px; }
+  .lbl { font-size: 13px; text-align: right; line-height: 1.25; color: var(--ink); }
+  .lbl small { display: block; color: var(--ink-3); font-size: 11px; }
+  .track { background: transparent; position: relative; height: 22px; }
+  .bar { height: 22px; border-radius: 0 4px 4px 0; position: relative; min-width: 8px;
+         transition: opacity .15s; }
+  .row:hover .bar { opacity: .85; }
+  .row:hover .tip { opacity: 1; }
+  .tip { position: absolute; left: 8px; top: 50%; transform: translateY(-50%);
+         font-size: 11px; color: #fff; opacity: 0; pointer-events: none; white-space: nowrap; }
+  .val { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+  .axis { display: grid; grid-template-columns: 230px 1fr 44px; gap: 10px; margin-top: 2px; }
+  .axis .ticks { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-3);
+                 border-top: 1px solid var(--grid); padding-top: 4px; }
+  .note { margin-top: 18px; font-size: 12.5px; color: var(--ink-2); line-height: 1.6;
+          border-top: 1px dashed var(--grid); padding-top: 12px; }
+  .note b { color: var(--ink); }
+  table.data { display: none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Premortem：Dispatch / Data Plugin「一個月後還沒動」死因排行</h1>
+  <p class="sub">已排除網路連線因素 · 機率為驗屍估計值（0–100）· 2026/7/15 · Pro 訂閱前提下</p>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--c1)"></i>操作/入口錯誤</span>
+    <span><i class="sw" style="background:var(--c2)"></i>環境前置條件</span>
+    <span><i class="sw" style="background:var(--c3)"></i>帳號/方案/開放</span>
+  </div>
+
+  <div id="chart"></div>
+  <div class="axis"><div></div><div class="ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100</span></div><div></div></div>
+
+  <div class="note">
+    <b>判讀</b>：前兩名都是「入口錯誤」——不是訂閱、不是網路。<br>
+    ① Data plugin 要在 <b>Claude Code 互動模式內</b>裝：<code>/plugin marketplace add anthropics/knowledge-work-plugins</code> → <code>/plugin install data@knowledge-work-plugins</code>（你剛打的 <code>claude plugins add</code> 不存在）。<br>
+    ② Dispatch 屬於 <b>Cowork（桌面 app）</b>，不在終端機裡——需桌面 app + 手機 app 同帳號配對，且 beta 開關打開。<br>
+    <b>行動順序</b>：先修 ①②（5 分鐘），再查帳號一致性，最後才懷疑 rollout。
+  </div>
+
+  <table class="data" aria-label="資料表">
+    <tr><th>死因</th><th>類別</th><th>機率</th></tr>
+  </table>
+</div>
+
+<script>
+const data = [
+  { name: "CLI 指令用錯（claude plugins add 不存在）", d: "應在互動模式用 /plugin", cat: 0, v: 90 },
+  { name: "產品面搞混（Dispatch≠Claude Code）", d: "Dispatch 在 Cowork 桌面 app", cat: 0, v: 80 },
+  { name: "Dispatch 前置缺：桌面/手機 app 未配對", d: "app 未裝、未開、beta 開關未開", cat: 1, v: 65 },
+  { name: "Beta 分批開放，台灣區未輪到", d: "Pro/Max beta 逐步 rollout", cat: 2, v: 40 },
+  { name: "桌機與手機登入帳號不一致", d: "console 帳號 vs claude.ai 帳號", cat: 2, v: 35 },
+  { name: "CLI / 桌面 app 版本過舊", d: "未更新到支援版本", cat: 1, v: 25 },
+  { name: "公司 GCB 組態封鎖（僅公司桌機）", d: "白名單擋安裝與外連", cat: 1, v: 15 },
+];
+const colors = ["var(--c1)", "var(--c2)", "var(--c3)"];
+const cats = ["操作/入口錯誤", "環境前置條件", "帳號/方案/開放"];
+const chart = document.getElementById("chart");
+const table = document.querySelector("table.data");
+data.forEach(item => {
+  const row = document.createElement("div");
+  row.className = "row";
+  row.innerHTML =
+    `<div class="lbl">${item.name}<small>${item.d}</small></div>` +
+    `<div class="track"><div class="bar" style="width:${item.v}%;background:${colors[item.cat]}">` +
+    `<span class="tip">${cats[item.cat]} · ${item.v}/100</span></div></div>` +
+    `<div class="val">${item.v}</div>`;
+  chart.appendChild(row);
+  const tr = document.createElement("tr");
+  tr.innerHTML = `<td>${item.name}</td><td>${cats[item.cat]}</td><td>${item.v}</td>`;
+  table.appendChild(tr);
+});
+</script>
+</body>
+</html>
