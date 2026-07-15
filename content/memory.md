@@ -45,10 +45,20 @@ SSH host key is not in your known_hosts file. ... Host key verification failed.
   HTTPS URL 形式，改用 `https://github.com/anthropics/knowledge-work-plugins`
   可完全避開 SSH host key 問題，更適合不想手動維護 known_hosts 的情境。
 
+### 選項B 確認可行（2026/7/15 web 查證）
+`/plugin marketplace add` **支援完整 HTTPS URL**，關鍵是要帶 `https://` 前綴
++ `.git` 結尾才會強制走 HTTPS、跳過 SSH host key 檢查：
+```
+/plugin marketplace add https://github.com/anthropics/knowledge-work-plugins.git
+/plugin install data@knowledge-work-plugins
+```
+也可用 `#branch-or-tag` 語法釘住分支/版本。
+另查到 Claude Code 官方 GitHub issue #26588：marketplace clone 預設用 SSH 是已知痛點，
+社群已提議改預設 HTTPS——代表 Isaac 撞到的不是個案，是產品已知問題。
+
 ### 待確認（下次接續）
-1. Isaac 執行 `ssh -T git@github.com` 後是否成功（自資安考量，不代為執行遠端連線指令）
-2. 若選 HTTPS 路徑，`/plugin marketplace add` 是否接受完整 URL 而非 `owner/repo` 簡寫
-3. Data plugin 裝好後，Dispatch（Cowork 桌面 app）仍需獨立確認：桌面/手機 app 配對狀態
+1. Isaac 用 HTTPS URL 指令重試 `/plugin marketplace add` 是否成功
+2. Data plugin 裝好後，Dispatch（Cowork 桌面 app）仍需獨立確認：桌面/手機 app 配對狀態
 
 ---
 
