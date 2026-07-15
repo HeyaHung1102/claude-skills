@@ -2,6 +2,56 @@
 
 ---
 
+## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
+
+### 起點
+Isaac 已訂閱 Pro，`claude plugins add knowledge-work-plugins/data` 報錯
+`unknown command 'add'`；懷疑是網路連線問題。
+
+### Premortem 結論（排除網路後的死因排行）
+1. **CLI 指令用錯**（機率最高）：`claude plugins add` 不是合法子指令，
+   plugin marketplace 安裝要在 **`claude` 互動模式內**用 `/plugin` 系列指令：
+   ```
+   /plugin marketplace add anthropics/knowledge-work-plugins
+   /plugin install data@knowledge-work-plugins
+   ```
+2. **產品面搞混**：Dispatch（手機遙控桌機）屬於 **Cowork 桌面 app**，
+   不在 Claude Code / 終端機範圍內，需要桌面 app + 手機 app 同帳號配對 + beta 開關。
+3. 其餘較低機率：beta 分批開放未輪到、桌機/手機帳號不一致、版本過舊、
+   公司 GCB 組態封鎖（僅辦公室電腦適用，MacBook Pro 個人機不受影響）。
+
+已產出圖表 `content/premortem_dispatch_chart.html`（色盤已跑 dataviz skill 驗證器）。
+
+### 實測結果：指令對了，但撞到新問題——SSH host key 未信任
+照建議指令下 `/plugin marketplace add anthropics/knowledge-work-plugins` 後，
+錯誤變成：
+```
+SSH host key is not in your known_hosts file. ... Host key verification failed.
+```
+**根因**：Claude plugin marketplace 預設用 SSH 協定（`git@github.com:...`）clone，
+但這台 MacBook Pro 從未手動連過 `github.com` 的 SSH，所以 `~/.ssh/known_hosts`
+沒有 GitHub 的 host key 指紋，觸發 strict host key checking 擋下。
+
+**這不是帳號/網路/訂閱問題，是全新的第四類死因：本機 SSH 信任鏈未建立。**
+應補進 premortem 排行第 1.5 名（緊追 CLI 指令用錯之後）。
+
+### 解法（兩選一，記錄給下次接續）
+- **選項A（官方建議，較安全）**：手動連一次驗證指紋後才會寫入 known_hosts：
+  ```
+  ssh -T git@github.com
+  ```
+  出現 fingerprint 提示時比對 GitHub 官方公告的 SHA256 指紋後輸入 yes。
+- **選項B（改用 HTTPS，跳過 SSH 信任鏈）**：若該 plugin marketplace 指令支援
+  HTTPS URL 形式，改用 `https://github.com/anthropics/knowledge-work-plugins`
+  可完全避開 SSH host key 問題，更適合不想手動維護 known_hosts 的情境。
+
+### 待確認（下次接續）
+1. Isaac 執行 `ssh -T git@github.com` 後是否成功（自資安考量，不代為執行遠端連線指令）
+2. 若選 HTTPS 路徑，`/plugin marketplace add` 是否接受完整 URL 而非 `owner/repo` 簡寫
+3. Data plugin 裝好後，Dispatch（Cowork 桌面 app）仍需獨立確認：桌面/手機 app 配對狀態
+
+---
+
 ## 反向幻覺案例：Gemini 誤判 Claude Cowork 為第三方軟體（2026/7/15 查核）
 
 ### 事件
