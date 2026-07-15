@@ -60,6 +60,16 @@ SSH host key is not in your known_hosts file. ... Host key verification failed.
 1. Isaac 用 HTTPS URL 指令重試 `/plugin marketplace add` 是否成功
 2. Data plugin 裝好後，Dispatch（Cowork 桌面 app）仍需獨立確認：桌面/手機 app 配對狀態
 
+### Dispatch 手機配對檢查清單（2026/7/15，給下次接續用）
+Dispatch 屬於 Cowork **桌面 app**，不是 CLI/終端機功能，跟 data plugin 是兩件獨立的事：
+1. 桌面 Claude app 需登入 `bssurcn@gmail.com`，且需保持開啟（背景執行即可）
+2. 桌面 app 設定裡確認 Cowork/Dispatch beta 開關已開
+3. 手機 Claude app 用同一組帳號登入
+4. 手機端找 Dispatch/指派任務入口，傳測試訊息驗證（例如「讀取桌面資料夾清單」）
+5. **若手機端找不到 Dispatch 入口** → 判讀為「這輪 beta 尚未輪到帳號」，
+   屬於 premortem 排行第 3 名（beta 分批開放），不是操作錯誤，不需要繼續除錯，
+   應該的下一步是等待輪次或直接回報 Anthropic，而不是反覆重裝。
+
 ---
 
 ## 反向幻覺案例：Gemini 誤判 Claude Cowork 為第三方軟體（2026/7/15 查核）
