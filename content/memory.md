@@ -76,6 +76,20 @@ Isaac 手機端已看到獨立的「Dispatch」頁面（輸入框文字「Dispat
 下一步不是繼續除錯裝置/帳號問題，而是實際發一則測試任務驗證桌機端真的會執行
 （例如「讀取桌面資料夾清單」），確認 Dispatch 端到端真的打通。
 
+### 實測結果：桌機端未連上（"Asleep" 狀態）
+Isaac 送出實際任務後，Dispatch 顯示狀態 **Asleep**，並回覆：
+`Can't reach your desktop. Check that your computer is online and desktop app is open.`
+
+**確診**：beta 權限完全沒問題（帳號、配對、任務傳送都成功），問題縮小到
+**桌面端連線層**，只有兩種可能：
+1. MacBook Pro 桌面 Claude app 沒開啟/已被關閉或登出
+2. MacBook Pro 進入睡眠或螢幕鎖定，網路連線中斷
+
+**新增 premortem 排行第 0 名（比 SSH host key、beta 輪次都常見）**：
+Dispatch 需要桌機端 app **保持在執行狀態**（背景執行可，但不能整台睡眠），
+這是持續性條件，不是一次性設定——每次要用 Dispatch 前都要先確認桌機醒著、
+app 開著，這點應該寫進未來任何「用手機遙控電腦」流程的標準檢查清單第一條。
+
 ---
 
 ## 反向幻覺案例：Gemini 誤判 Claude Cowork 為第三方軟體（2026/7/15 查核）
