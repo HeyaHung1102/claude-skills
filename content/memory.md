@@ -124,6 +124,30 @@ MacBook Pro 喚起的，沒有管道連到另一台實體機器。要打通 Vivo
 （跑在 Vivobook 上）才能實際把 `git-loops/config/machines.json` 的
 `VIVOBOOK-PLACEHOLDER` 填上真實 hostname。
 
+### 2026/7/19 執行：osint-purifier-mcp 舊副本已封存（非 worktree）
+
+使用者要求「套用 worktree、舊副本封存掉」，但先說明清楚：osint-purifier-mcp
+兩份都在 **同一個 main 分支**，沒有兩個分支要並存，套 worktree 沒有意義——
+worktree 只適用於 portfolio-tracker 那種「兩個分支各有價值」的情況。
+osint-purifier-mcp 真正該做的只是「封存」，動手前重新確認狀態沒變化
+（舊副本仍只有一筆未 commit 的 docx 刪除，新副本仍是祖先關係已驗證的後代），
+執行：
+
+```bash
+mv ~/Documents/GitHub/osint-purifier-mcp ~/Documents/GitHub/osint-purifier-mcp-archived-20260719
+```
+
+單純改名，非刪除，`.git` 歷史與那筆未 commit 的刪除都完整保留在封存資料夾裡，
+完全可逆。重跑 scan 確認 osint-purifier-mcp 已只剩 `~/osint-purifier-mcp` 一份、
+不再出現在「發現多份副本」警告中（見 `content/git_loops_inventory_20260719b.md`）。
+
+**待辦**：portfolio-tracker 的 `git worktree` 轉換尚未執行，使用者這輪只要求
+先處理 osint-purifier-mcp；下次若要接續處理 portfolio-tracker，指令是：
+```bash
+cd ~/Documents/GitHub/portfolio-tracker
+git worktree add ../portfolio-tracker-positions claude/optimistic-fermi-6fs51v
+```
+
 ---
 
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
