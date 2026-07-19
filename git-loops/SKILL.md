@@ -68,8 +68,31 @@ scan → 處理未推送的變更 → push，另一台再 pull。腳本不做機
 ## 本次已自動處理：ff-pull 成功清單（sync 模式才有）
 ```
 
-## 已知現況（2026/7/18 首次盤點，詳見 content/git_loops_inventory_20260718.md）
+## 已知現況（2026/7/19 更新，詳見 content/git_loops_inventory_20260719.md）
 
-- MacBook Pro 上 Faith-Hope-Love **不存在**，需要 clone 或確認它只活在 Vivobook
-- 重複副本問題比「沒同步」更嚴重，先收斂每個 repo 到單一正本路徑再談自動同步
-- 建議正本路徑收斂到 `~/Documents/GitHub/<repo>`（GitHub Desktop 預設）或家目錄，二選一
+- **repo 名稱要以 `git remote get-url origin` 為準，不要信任口語拼法**：
+  `Faith-Hope-Love`（連字號）在這台 Mac 上一度被誤判「缺席」，實際上它存在，
+  只是 GitHub 上真名是 `Faith_Hope_Love`（底線）。設定檔已修正。
+- **「重複副本」不是單一問題，要先分辨是哪一種再決定怎麼處理**：
+  - **同一分支、單純沒同步**（例：osint-purifier-mcp 兩份都在 main，
+    一份停在一個月前）→ 用 `git merge-base --is-ancestor` 確認舊的那份沒有
+    獨有 commit 後，收斂成一份工作副本，另一份改名封存或刪除
+  - **不同分支、各自有價值**（例：portfolio-tracker 一份在 main、一份在
+    功能分支且領先 39 個 commit）→ **不要**當成「兩份正本各自放著不管」，
+    這樣反而增加漂移風險；改用 `git worktree` 讓兩個分支共用同一個 `.git`
+  - 判斷方式：`git log --oneline branchA..branchB` 兩個方向都跑一次，
+    看誰對誰有獨有 commit，決定屬於上面哪一種情況
+- 正本路徑建議收斂到 `~/Documents/GitHub/<repo>`（GitHub Desktop 預設）——
+  但這只解決「多個獨立 clone 互相漂移」的技術風險，跟該不該公開/保密
+  repo 內容是兩個獨立的問題，不要混為一談
+
+## 與 FWB-property 的 `git-loops.skill` 的關係
+
+`FWB-property` repo（`.claude/skills/git-loops/SKILL.md`，2026/6/29 建立）
+已經有一個同名但取向不同的技能：單一 repo、真的執行 add/commit/push
+的 4 階段流程，且內建機密掃描（明文密碼、`.pfx`、VSS 殘留檔）。
+本技能（多 repo/多機器、唯讀優先、從不自動 commit/push）是廣度取向，
+兩者互補但目前是分開維護的兩份程式碼。**尚未完成的整合**：把 FWB 版的
+機密掃描邏輯抽出來共用——本技能目前完全沒有機密掃描，而實測已經在
+osint-purifier-mcp 挖到未追蹤的個人交易心法筆記坐在 git 工作目錄裡，
+正是 FWB 版那個掃描階段設計要擋的情境。

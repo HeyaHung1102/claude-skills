@@ -4,9 +4,12 @@
     "osint-purifier-mcp",
     "portfolio-tracker",
     "claude-skills",
-    "Faith-Hope-Love",
+    "Faith_Hope_Love",
     "my_knowledge_base"
   ],
+  "repo_name_notes": {
+    "Faith_Hope_Love": "GitHub 上實際用底線,不是連字號(Faith-Hope-Love 會搜尋失敗)。2026/6/11 從 Focus_on_Peresistence 改名而來,詳見 my_knowledge_base/output/2026-06-11_Premortem_Faith_Hope_Love_repo改名.md"
+  },
   "machines": {
     "hongheyas-MacBook-Pro": {
       "os": "darwin",

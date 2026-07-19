@@ -51,6 +51,79 @@ osint-purifier-mcp repo 裡一個同名資料夾（裝著量化交易筆記 .md/
    用真實資料跑過一次 scan 就是最直接的驗證；若之後要精修觸發描述，
    再回頭補 description 優化那一段
 
+### 2026/7/19 修正：三個待辦被使用者現場推翻，記錄真相
+
+**① Faith-Hope-Love「缺席」是名稱誤判，不是真的沒有**：
+實際搜尋發現這台 Mac 上有 `~/Faith_Hope_Love`（**底線，不是連字號**），
+GitHub remote 確認為 `HeyaHung1102/Faith_Hope_Love.git`。2026/6/11 的 premortem
+（`my_knowledge_base/output/2026-06-11_Premortem_Faith_Hope_Love_repo改名.md`）
+記載這是從 `Focus_on_Peresistence` 改名而來——git-loops 的設定檔原本寫
+`"Faith-Hope-Love"`（連字號）去搜尋，永遠找不到底線版本。已修正
+`git-loops/config/machines.json` 的 repo 名稱為 `Faith_Hope_Love`，重跑 scan
+後正確找到，乾淨無異動。**教訓**：repo 改名歷史要優先信任 `git remote get-url`
+的實際值，不要信任口語或先前對話裡的拼法。
+
+**② portfolio-tracker「兩份都是正本」——使用者的結論對，但理由需要修正**：
+使用者原本的推論是「樺的心法要保密、我還沒學到、六七月靠倉位管理才減損」，
+以此主張兩份都不能動。實地查證後，真相是更簡單的 git 事實：
+`~/Documents/GitHub/portfolio-tracker`（main）與 `~/portfolio-tracker`
+（branch `claude/optimistic-fermi-6fs51v`）不是兩個平行正本，是**同一個
+repo 的兩個分支**——功能分支領先 main **39 個 commit**（`irr.py`、
+`opportunity_cost.py`、`add_cashflow.py`、`ecpay_webhook_guard.py` 等，
+即 IRR 專案的實際成果），且 main 對功能分支沒有任何獨有內容。
+**好消息**：這個功能分支已經推上 GitHub（`origin/claude/optimistic-fermi-6fs51v`
+同步），不是只存在本機，不會因硬碟壞掉而遺失。
+
+真正該解決的不是「保密 vs 開源」（那是另一個層次的問題），而是**兩個獨立
+`.git` clone 本身帶來的漂移風險**（在兩邊各自改東西、忘記同步、事後要處理
+衝突）。建議方案是 `git worktree`（同一份 `.git`、兩個資料夾），而不是
+「兩份各自獨立、放著不管」——後者才是真正會讓有價值的倉位管理程式碼
+走丟的方式。
+
+**③ osint-purifier-mcp 不適用「兩份都是正本」的邏輯**：
+用 `git merge-base --is-ancestor` 驗證，`~/Documents/GitHub/osint-purifier-mcp`
+（main，停在 2026/6/7）是 `~/osint-purifier-mcp`（main，含 2026/7/16 的
+KL 散度修正）的**直系祖先**，沒有任何獨有 commit——純粹是一個多月沒同步的
+舊副本，不是刻意分岔的兩個用途。跟 portfolio-tracker 的情況本質不同，
+不該套用同一套「都保留」的邏輯。舊副本裡有一筆未 commit 的刪除
+（永豐金/臺銀證券 SDK 調查報告 docx），處理前要先確認是否為刻意清理。
+
+**額外發現（與樺的保密警告直接相關）**：`~/osint-purifier-mcp` 根目錄下有
+5 份未追蹤的個人量化心法筆記（先知不等式、什麼是分佈、胡塞爾現象學結合
+量價、兩份 HTML 累計表），坐在一個 git 工作目錄裡。repo 目前是 **private**
+（`gh repo view` 確認），暫無外流風險，但既然對話裡樺明確警告心法不能公開，
+建議這類筆記移到 `my_knowledge_base` 或完全不進 git 的資料夾，
+不要留在程式碼 repo 根目錄，避免將來這個 repo 若要開源共享工具時
+一併洩漏。
+
+### FWB-property 也有一份 git-loops 技能——取向互補而非重複
+`FWB-property`（路產組 ASP.NET 舊系統）在 `.claude/skills/git-loops/SKILL.md`
+早就有一份同名技能（2026/6/29 建立，v1.0.0），但本地 checkout 是舊版，
+`git fetch` 後才在 origin/main 看到。兩者定位不同：
+
+| | FWB-property 版 | claude-skills 版（今天新建） |
+|---|---|---|
+| 範圍 | 單一 repo，`/git-loops [msg]` 指令 | 多 repo、多機器，Python 腳本 |
+| 動作深度 | 真的執行 add/commit/push（4 階段流程） | 只 scan（唯讀）+ sync（僅安全 ff-pull），從不自動 commit/push |
+| 安全機制 | 掃描明文密碼、`.pfx`、VSS 殘留檔，抓到就擋 | 無機密掃描，只看 git 狀態 |
+
+**待辦**：把 FWB 版的機密掃描邏輯抽出來給兩邊共用——今天在 osint-purifier-mcp
+挖到的心法筆記外流風險，正是這個掃描階段該擋的情境。使用者尚未回覆是否要做。
+
+### Vivobook 跨機同步——確認目前技術上做不到，不是不想做
+`RemoteTrigger` 工具只能觸發 claude.ai 雲端排程（跑在 Anthropic 沙箱），
+不是連到使用者實體的 Vivobook。Dispatch 的架構是「手機配對到已登入、
+已開啟 desktop app 的特定機器」，這個 session 本身就是被 Dispatch 從
+MacBook Pro 喚起的，沒有管道連到另一台實體機器。要打通 Vivobook 必須：
+1. Vivobook 裝 Windows 版 Claude 桌面 app，登入 `bssurcn@gmail.com`
+2. 確認 Dispatch beta（帳號層級已知開通）
+3. 桌面 app 保持開啟、機器不睡眠
+4. 使用者手動送出第一個 Dispatch 任務，**這是唯一能驗證「Dispatch 送到哪台機器」路由邏輯的方式**——目前不確定是送到最近上線的那台還是兩台都收到
+
+等使用者在 Vivobook 完成配對並送出第一個任務，下一個 Dispatch session
+（跑在 Vivobook 上）才能實際把 `git-loops/config/machines.json` 的
+`VIVOBOOK-PLACEHOLDER` 填上真實 hostname。
+
 ---
 
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
