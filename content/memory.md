@@ -2,6 +2,57 @@
 
 ---
 
+## Dispatch 首航成功 + git-loops 技能誕生（2026/7/18-19）
+
+### Dispatch 端到端驗證完成
+承接上面 Asleep 誤報翻案：使用者在桌面 app 按下正確 session 的資料夾授權後，
+「Line 快捷鍵截圖與研究」任務順利跑完，產出
+`LINE_Mac_快捷鍵完整清單.md`（8 個已知快捷鍵 + 網路補充的 5 個，分基本/好友聊天列表/聊天三類）。
+**這是 Dispatch 手機遙控桌機的第一次完整成功案例**，可作為未來示範範本。
+
+### 新建技能：git-loops（跨機多 repo 巡邏同步）
+起點：Isaac 的五個 GitHub repo（HeyaHung1102 帳號：osint-purifier-mcp、
+portfolio-tracker、claude-skills、Faith-Hope-Love、my_knowledge_base）散落在
+MacBook Pro 與 ASUS Vivobook 上，想要一個技能能批次檢查/同步。
+公司桌機 A00866 明確排除（不能裝 Claude Code）。
+
+技能位置：`git-loops/`（SKILL.md + `scripts/git_loops.py` + `config/machines.json`）。
+核心設計：**scan（唯讀盤點）永遠先做，sync 只對「乾淨且落後遠端」的 repo
+自動 ff-pull，其餘一律只回報不動手**（dirty/需 push/分岔/重複副本都要人工決定）——
+因為這些 repo 裡有交易筆記、公務文件草稿，自動 merge 或誤刪副本代價太高。
+
+跨機器透過 `config/machines.json` 用 hostname 分流搜尋根目錄；Vivobook 第一次跑
+scan 時腳本會印出偵測到的 hostname，供手動填入設定檔（目前该欄位是佔位符
+`VIVOBOOK-PLACEHOLDER`，還沒有真實跑過）。
+
+### 2026/7/18 首次盤點結果（MacBook Pro 單機，`content/git_loops_inventory_20260718.md`）
+| repo | 發現份數 | 狀態 |
+|---|---|---|
+| osint-purifier-mcp | **2 份**（`~/osint-purifier-mcp`、`~/Documents/GitHub/osint-purifier-mcp`） | 兩份都 dirty |
+| portfolio-tracker | **2 份**（`~/portfolio-tracker`、`~/Documents/GitHub/portfolio-tracker`） | 一份在 `claude/optimistic-fermi-6fs51v` 分支且有 untracked 檔，另一份 main 乾淨 |
+| claude-skills | 1 份 | 乾淨 |
+| my_knowledge_base | 1 份 | 乾淨 |
+| Faith-Hope-Love | **0 份（缺席）** | 這台機器上完全找不到，需 clone 或確認是否只活在 Vivobook |
+
+**易混淆但確認排除的假警報**：`~/osint-purifier-mcp/portfolio-tracker` 看起來像
+第三份 portfolio-tracker 副本，但實際查證它**沒有自己的 `.git`**，只是
+osint-purifier-mcp repo 裡一個同名資料夾（裝著量化交易筆記 .md/.html），
+不是重複 clone。腳本靠「有沒有 `.git`」正確排除了它，人工複查也確認無誤——
+未來看到路徑裡有 repo 名稱重複出現，先查 `.git` 是否存在，別急著當成重複副本。
+
+### 待辦（下次接續）
+1. **決定每個重複 repo 的正本路徑**（建議收斂到 `~/Documents/GitHub/<repo>`，
+   跟 GitHub Desktop 預設一致），另一份要嘛刪除要嘛改名成 `-old` 標記
+2. **確認 Faith-Hope-Love** 是否真的只存在於 Vivobook，若是則這台 Mac 要 clone 一份
+3. **在 ASUS Vivobook 上跑第一次 `git_loops.py scan`**，把印出的真實 hostname
+   填回 `git-loops/config/machines.json`（目前是佔位符），才能真正做到「跨機」而不只是單機
+4. 這次為了今天交付中間清單，**跳過了 skill-creator 標準流程的 eval/benchmark 迴圈**
+   （spawn 測試案例、benchmark.json、eval viewer）——這是務實工具腳本，
+   用真實資料跑過一次 scan 就是最直接的驗證；若之後要精修觸發描述，
+   再回頭補 description 優化那一段
+
+---
+
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
 
 ### 起點

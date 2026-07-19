@@ -1,0 +1,30 @@
+{
+  "github_user": "HeyaHung1102",
+  "repos": [
+    "osint-purifier-mcp",
+    "portfolio-tracker",
+    "claude-skills",
+    "Faith-Hope-Love",
+    "my_knowledge_base"
+  ],
+  "machines": {
+    "hongheyas-MacBook-Pro": {
+      "os": "darwin",
+      "search_roots": [
+        "~",
+        "~/Documents/GitHub"
+      ]
+    },
+    "VIVOBOOK-PLACEHOLDER": {
+      "os": "windows",
+      "note": "第一次在 Vivobook 跑 scan 時，把這個 key 改成腳本提示的實際 hostname，並填入真實的搜尋根目錄",
+      "search_roots": [
+        "~",
+        "~/Documents/GitHub"
+      ]
+    }
+  },
+  "excluded_machines": {
+    "A00866": "公司桌機，無法安裝 Claude Code，不納入同步迴圈"
+  }
+}
