@@ -148,6 +148,47 @@ cd ~/Documents/GitHub/portfolio-tracker
 git worktree add ../portfolio-tracker-positions claude/optimistic-fermi-6fs51v
 ```
 
+### 2026/7/20 執行：portfolio-tracker 已轉換為 git worktree
+
+動手前重新確認：兩份 remote 一致（大小寫差異不影響，GitHub 帳號不分大小寫），
+`~/portfolio-tracker`（功能分支）只有無害的 `.DS_Store` untracked，`fetch` 後
+確認舊獨立 clone 對 origin 的功能分支**沒有任何未推送的獨有 commit**
+（`git log origin/claude/optimistic-fermi-6fs51v..HEAD` 為空），可安全封存。
+
+執行結果：
+
+```bash
+cd ~/Documents/GitHub/portfolio-tracker
+git fetch origin
+git worktree add ../portfolio-tracker-positions claude/optimistic-fermi-6fs51v
+mv ~/portfolio-tracker ~/portfolio-tracker-archived-20260720   # 舊獨立 clone 封存，非刪除
+```
+
+**意外發現**：fetch 時發現 `origin/main` 早就被推進到 58e5392（比本地 main
+快取的 8fab0b7 新），main 上其實已經有一部分 IRR 專案檔案（`irr.py`、
+`memory.md`、`CLAUDE.md` 等 33 個檔案），跟原本判斷的「main 對功能分支
+沒有任何獨有內容」仍然一致（反向檢查 `feature..main` 仍是 0），但代表
+main 不是我最初以為的「空的骨架分支」，而是曾經被同步過一次、只是本機
+快取沒跟上。main 這邊乾淨，直接 `git pull --ff-only` 追上，沒有風險。
+
+**目前結構**：
+```
+~/Documents/GitHub/portfolio-tracker            main (58e5392)
+~/Documents/GitHub/portfolio-tracker-positions  claude/optimistic-fermi-6fs51v (a1c85e7，領先 main 16 個 commit)
+~/portfolio-tracker-archived-20260720           封存的舊獨立 clone（可回頭核對，非工作副本）
+```
+兩個 worktree 共用同一份 `.git`，之後在任一邊 commit/push，另一邊的 `git worktree list`
+永遠反映最新真相，不會再有「兩個 clone 各自往前走、忘記同步」的風險。
+
+**待辦（下次接續）**：
+1. `git-loops/scripts/git_loops.py` 目前用「同名資料夾＝可能重複」判斷副本，
+   遇到 worktree 結構（`portfolio-tracker` / `portfolio-tracker-positions` 資料夾名不同、
+   但共用 `.git`）不會誤判成需要人工決定正本，這點是好的；但如果之後要對
+   osint-purifier-mcp 或其他 repo 也套用 worktree，資料夾命名要延續
+   `<repo>-<用途>` 這個模式，避免掃描器把它當成獨立副本警告
+2. main 落後功能分支 16 個 commit 這件事本身沒處理——是否要把功能分支的
+   IRR 成果正式合併回 main，還是保持功能分支長期領先，留給使用者決定
+
 ---
 
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
