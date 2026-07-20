@@ -189,6 +189,55 @@ main 不是我最初以為的「空的骨架分支」，而是曾經被同步過
 2. main 落後功能分支 16 個 commit 這件事本身沒處理——是否要把功能分支的
    IRR 成果正式合併回 main，還是保持功能分支長期領先，留給使用者決定
 
+### 2026/7/20 補充：worktree 概念與 Codex 的連結（已查證，非猜測）
+
+使用者問 worktree 對接下來用 Codex 更新職務/頻道設定有什麼幫助，先用
+WebSearch 查證（因為這類「未來產品功能」主張過去在 [[概念/反向幻覺案例]]
+翻過車，不能只信單一文件）：**OpenAI Codex app 於 2026 年初上線
+（macOS）、2026/3/4 上線 Windows 版，官方文件證實原生用 git worktree
+管理平行 agent 執行緒**——多個 agent 同時處理同一 repo 時，每個自動拿到
+獨立 worktree 資料夾，彼此不衝突但共用同一份 commit 歷史。跟今天手動幫
+portfolio-tracker 做的事,底層機制相同。查證來源：
+[Introducing the Codex app](https://openai.com/index/introducing-the-codex-app/)、
+[Worktrees | ChatGPT Learn](https://developers.openai.com/codex/app/worktrees)。
+同時查證 GPT-5.5 確有其事（2026/4/23 發布），推翻了原本對這份文件的懷疑——
+**這次文件的技術主張是對的，不是反向幻覺案例的重演**，提醒自己每次都要
+真查證、不能因為「上次那份文件是編的」就預設「這次也是編的」。
+
+**可遷移的操作習慣**：Codex 自動建立的 worktree 累積起來後，清理判斷邏輯
+跟今天處理 osint-purifier-mcp／portfolio-tracker 一樣——先用
+`git log branchA..branchB` 雙向查有沒有獨有 commit，再決定要不要清掉，
+不能只看資料夾多寡就判斷「重複」。
+
+### 2026/7/20 查證：Faith_Hope_Love 不適用 worktree（跟 osint-purifier-mcp 同款教訓）
+
+使用者要求「也套用 worktree」，動手前先查證是否有值得保留的第二分支
+（跟 osint-purifier-mcp 那次一樣，不能看到「重複」兩字就無腦套 worktree）。
+查證結果：
+
+1. **`.claude/worktrees/basic-pitch-midi-conversion-0068fc`**：Claude Code
+   自己的 session 隔離機制已經建過一份 worktree，跟 main **完全相同**
+   （雙向 diff 都是 0），是個空的、沒有獨有內容的舊 session 殘留，
+   不是使用者手動建的重複副本
+2. **`origin/claude/claude-md-docs-ooau0h`**：`git log main..此分支` 顯示
+   14 個「獨有」commit，但深入比對後發現 main 的 `b4e4037` 其實是這整條
+   分支的 **squash-merge**（commit message 完整包含被 squash 的 14 筆
+   子訊息）——也就是說內容早就進了 main，git 只是因為 squash-merge
+   不保留原始 commit hash 而顯示「獨有」。真正沒被合併的只剩
+   `a02fdc9` 這一筆殘留 commit，且內容只是 3 個檔案的小幅刪減
+   （`.gitignore`/`CLAUDE.md`/`concepts/Pre-mortem.md`，共 1 增 6 減）
+
+**結論**：跟 portfolio-tracker（真的有 39→16 個獨有 commit 的活躍功能分支）
+性質不同，Faith_Hope_Love 沒有值得長期並存的第二分支，套 worktree
+只會多開一個空資料夾，沒有實質保護作用。**不執行 worktree**。
+
+**建議改用使用者自己已經寫好的方法論**：這個 repo 裡本來就有一份
+`4ae16d6 docs(kb): 分支健檢紀錄 + squash-merge安全刪除判斷方法論`——
+正是為這種情境準備的。下一步應該是：確認 `a02fdc9` 那 3 行小刪減
+要不要手動補進 main，然後依既有方法論安全刪除 `claude-md-docs-ooau0h`
+這條已經完成任務的分支，而不是保留它。這件事使用者還沒回覆是否要做，
+留待下次確認。
+
 ---
 
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
