@@ -238,6 +238,39 @@ portfolio-tracker 做的事,底層機制相同。查證來源：
 這條已經完成任務的分支，而不是保留它。這件事使用者還沒回覆是否要做，
 留待下次確認。
 
+### 2026/7/20 修正：上面「a02fdc9 只是 3 行小改動」的判斷本身是錯的
+
+使用者接續要求「把 a02fdc9 那 3 行補進 main，然後刪掉分支」，動手時發現
+自己犯了跟這個 repo 方法論文件警告的**同一類錯誤**：當初用
+`git show a02fdc9 -- .gitignore CLAUDE.md concepts/Pre-mortem.md`（路徑限制）
+去看內容，這個限制本身就會隱藏該 commit 真正改到的其他檔案——實際上
+`a02fdc9` 改的是 `.SKILL/kb/memory.md`（32 行）+ 新增
+`output/2026-07-16_meta_quarterly_backup.ics`，跟 `881a44a` 新增的
+`output/2026-07-16_meta_ban_checklist_A4.md` 合起來，是一份完整的
+Meta 帳號防封鎖自救文件，不是「3 行小改動」。
+
+重新用 repo 自己的方法論（`git diff origin/main...origin/<branch>` 逐檔逐字比對）
+查證後發現：這三份內容**其實已經逐字存在於 main**，只是透過 main 自己
+獨立的 commit（`b4e4037`，很可能是仿照方法論裡「PR 關閉未合併、改用
+GitHub API 手動 cherry-pick」的方式進去的），不是靠這條分支合併過去的。
+三點 diff 顯示「新增」只是因為 main 和分支各自從共同祖先分頭做出了同一份
+內容，對著祖先比較才會顯示成新增，逐字比對 main 當前狀態才看得出其實
+沒有遺漏。
+
+**教訓**：①路徑限制過的 `git show`/`git diff` 會隱藏該 commit 其他檔案的
+真實內容，之前判斷 osint-purifier-mcp 沒犯這個錯是因為當時查的是整個
+commit 沒加路徑限制，這次用了路徑限制才踩坑；②三點 diff（`A...B`）顯示
+「新增」不能直接當「未合併」，還要跟目標分支的**當前**內容逐字比對，
+排除「兩邊各自獨立做出同一份東西」這種幾何假象。
+
+**最終執行**：確認三份內容逐字相同後，不需要合併任何東西，直接
+`git push origin --delete claude/claude-md-docs-ooau0h` 刪除分支，
+並依 repo 自己的慣例在 `.SKILL/kb/memory.md`（Faith_Hope_Love 自己的
+知識庫，不是這份 claude-skills 的 memory.md）補了一筆分支健檢紀錄
+（commit `0ae1cc8`）。現存分支只剩 main，另有一個 Claude Code 自動建立、
+內容與 main 相同的空 session worktree（`claude/basic-pitch-midi-conversion-0068fc`），
+非使用者手動建立，暫不處理。
+
 ---
 
 ## Premortem：Dispatch / Data Plugin 安裝卡關（2026/7/15）
